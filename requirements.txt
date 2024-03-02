@@ -1,0 +1,15 @@
+streamlit
+pandas
+matplotlib.pyplot 
+KMeans
+seaborn
+numpy
+plotly.express
+altair
+time
+scipy
+plotly.graph_objects 
+streamlit_option_menu 
+option_menu
+scipy.optimize 
+linprog
