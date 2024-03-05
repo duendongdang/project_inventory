@@ -981,7 +981,7 @@ def main():
                 st.markdown('')
                 st.markdown('')
                 st.markdown('')
-                st.dataframe(data_2[['Product','Grade','Gram','ton','number_of_week','average_weekly','std_ton_weekly','Product Type Cluster','Z_score_cluster'
+                st.dataframe(data_2[['Product','Grade','Gram','ton','number_of_week','average_weekly','std_ton_weekly','Product Type','Product Type Cluster','Z_score_cluster'
                                     ,'Z_std_cluster','Lead Time (weeks)','std_leadtime','avg_leadtime','Cost','Safety Stock','ROP Weekly','Safety Stock Manual','ROP Weekly Manual','New Safety Stock','Minimum Cost','New Safety Stock Manual','Minimum Cost Manual']],width=1500, height=400)
                 pass
     
