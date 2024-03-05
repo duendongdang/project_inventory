@@ -790,7 +790,7 @@ def main():
             
             tab1 , tab2 , tab3 = st.tabs(["Safety Stock & Reorder Point ", "Safety Stock & Reorder Point (Cluster)", "Result for Minimum"])
             with tab1 :
-                st.markdown('<h4 style="text-align:center;">🛡️ Safety Stock & Reorder Point ⚠️</h4>', unsafe_allow_html=True)
+                st.markdown('<h4 style="text-align:center;color:red;">🛡️ Safety Stock & Reorder Point ⚠️</h4>', unsafe_allow_html=True)
                 c = data_2['Cost'].to_numpy()
                 A_ub = -1 * np.identity(len(c)) 
                 b_ub = -data_2['New Safety Stock'].to_numpy()
