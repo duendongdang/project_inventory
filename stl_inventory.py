@@ -351,7 +351,7 @@ def main():
                     st.markdown('')
                     st.dataframe(data_1[['Product','Grade','Gram','ton','number_of_week','average_weekly','std_ton_weekly','Product Type','Product Type Cluster' ]],width=1500, height=300)
                     st.stop()
-                
+                    
             # ✋🏻 ---------------------------------------------------------------------------------------------------------------------------        
 
             elif selected == "Monthly Data":
@@ -709,6 +709,8 @@ def main():
             
             np.random.seed(42)  
             data_2['Lead Time (weeks)'] = np.random.randint(1, 12, data_2.shape[0])
+            data_2['Lead Time (month)'] = np.random.randint(1, 12, data_2.shape[0])
+            data_2['Lead Time (9box)'] = np.random.randint(1, 12, data_2.shape[0])
             np.random.seed(42)  
             data_2['Cost'] = np.random.randint(50,500, data_2.shape[0])
             col1,col2 ,col3 = st.columns(3)
@@ -727,6 +729,22 @@ def main():
                 z_score_low = stats.norm.ppf(percentile_input_low / 100.0)
                 # z_score_low = stats.norm.ppf(percentile_input_low)
                 st.write(f"Z-Score Low: {z_score_low:.4f}")
+            data_type = st.selectbox('Select Data Type for Calculation', ['Weekly', 'Monthly', '9Box'], index=0) 
+            if data_type == 'Weekly':
+                lead_time_col = 'Lead Time (weeks)'
+                average_col = 'average_weekly'
+                std_col = 'std_ton_weekly'
+                number = 'number_of_week'
+            elif data_type == 'Monthly':
+                lead_time_col = 'Lead Time (month)'
+                average_col = 'average_monthly'
+                std_col = 'std_ton_monthly'
+                number = 'number_of_month'
+            elif data_type == '9Box':
+                lead_time_col = 'Lead Time (9box)'
+                average_col = 'average_monthly'
+                std_col = 'std_ton_weekly'
+                number = 'number_of_week'
 
             st.markdown('')
             st.markdown('')
@@ -769,19 +787,25 @@ def main():
                 else:
                     return None  
             
+             # ต่อไปนี้คือการปรับการคำนวณ 'Safety Stock', 'ROP' และอื่นๆ ให้ใช้ตัวแปรที่กำหนดไว้
+            data_2['std_leadtime'] = data_2.groupby('Product')[lead_time_col].transform('std')
+            data_2['avg_leadtime'] = data_2.groupby('Product')[lead_time_col].transform('mean')
+
+            # ปรับการคำนวณ 'Z_std', 'Safety Stock', และ 'ROP' ให้ใช้คอลัมน์ที่ถูกต้องตามประเภทข้อมูล
             data_2['Z_score'] = data_2.apply(calculate_z_score, axis=1)
-            data_2['Z_std'] = data_2['Z_score'] *(data_2['std_ton_weekly'])
+            data_2['Z_std'] = data_2['Z_score'] * data_2[std_col] 
+            
             data_2['Z_score_cluster'] = data_2.apply(calculate_z_score_manual, axis=1)
-            data_2['Z_std_cluster'] = data_2['Z_score_cluster'] *(data_2['std_ton_weekly'])
+            data_2['Z_std_cluster'] = data_2['Z_score_cluster'] * data_2[std_col]
             
-            data_2['std_leadtime'] = data_2.groupby('Product')['Lead Time (weeks)'].transform('std')
-            data_2['avg_leadtime'] = data_2.groupby('Product')['Lead Time (weeks)'].transform('mean')
+            data_2['std_leadtime'] = data_2.groupby('Product')[lead_time_col].transform('std')
+            data_2['avg_leadtime'] = data_2.groupby('Product')[lead_time_col].transform('mean')
             
-            data_2['Safety Stock'] = data_2['Z_std'] * np.sqrt(data_2['avg_leadtime']) 
-            data_2['ROP Weekly'] = ((data_2['average_weekly']*data_2['avg_leadtime']) + data_2['Safety Stock'])
+            data_2['Safety Stock'] = data_2['Z_std'] * np.sqrt(data_2['avg_leadtime'])
+            data_2['ROP'] = (data_2[average_col] * data_2['avg_leadtime']) + data_2['Safety Stock']
             
             data_2['Safety Stock Manual'] = data_2['Z_std_cluster'] * np.sqrt(data_2['avg_leadtime']) 
-            data_2['ROP Weekly Manual'] = ((data_2['average_weekly']*data_2['avg_leadtime']) + data_2['Safety Stock Manual'])
+            data_2['ROP Manual'] = ((data_2[average_col]*data_2['avg_leadtime']) + data_2['Safety Stock Manual'])
             
             data_2['New Safety Stock'] = data_2.apply(new_safety_stock, axis=1)
             data_2['New Safety Stock Manual'] = data_2.apply(new_safety_stock_manual, axis=1)
@@ -799,8 +823,8 @@ def main():
                 result = linprog(c, A_ub=A_ub, b_ub=b_ub, bounds=x_bounds, method='highs')
                 data_2['Minimum Cost'] = result.x
                 
-                st.dataframe(data_2[['Product','Grade','Gram','ton','number_of_week','average_weekly','std_ton_weekly','Product Type','Z_score'
-                                    ,'Z_std','Lead Time (weeks)','std_leadtime','avg_leadtime','Safety Stock','ROP Weekly','New Safety Stock','Minimum Cost']],width=1500, height=400)  
+                st.dataframe(data_2[['Product','Grade','Gram','ton',number,average_col,std_col,'Product Type','Z_score'
+                                    ,'Z_std',lead_time_col,'std_leadtime','avg_leadtime','Safety Stock','ROP','New Safety Stock','Minimum Cost']],width=1500, height=400)  
             
                 
                 product_list = data_2.apply(lambda x: f"{x['Product']} - {x['Grade']} - {x['Gram']}g", axis=1).unique().tolist()
@@ -841,7 +865,7 @@ def main():
                     st.markdown(f'<div class="metric-box"><h2>Safety Stock</h2><h1>{selected_product_data["New Safety Stock"].sum():,.4f}</h1></div>', unsafe_allow_html=True)
 
                 with result2:
-                    st.markdown(f'<div class="metric-box"><h2>Reoder Point</h2><h1>{selected_product_data["ROP Weekly"].sum():,.4f}</h1></div>', unsafe_allow_html=True)
+                    st.markdown(f'<div class="metric-box"><h2>Reoder Point</h2><h1>{selected_product_data["ROP"].sum():,.4f}</h1></div>', unsafe_allow_html=True)
 
                 with result3:
                     st.markdown(f'<div class="metric-box"><h2>Minimum Cost</h2><h1>{selected_product_data["Minimum Cost"].sum():,.4f}</h1></div>', unsafe_allow_html=True)
@@ -873,8 +897,8 @@ def main():
                 
                 data_2['Minimum Cost Manual'] = result_manual.x
                 
-                st.dataframe(data_2[['Product','Grade','Gram','ton','number_of_week','average_weekly','std_ton_weekly','Product Type Cluster','Z_score_cluster'
-                                    ,'Z_std_cluster','Lead Time (weeks)','std_leadtime','avg_leadtime','Cost','Safety Stock Manual','ROP Weekly Manual','New Safety Stock Manual','Minimum Cost Manual']],width=1500, height=400)
+                st.dataframe(data_2[['Product','Grade','Gram','ton',number,average_col,std_col,'Product Type Cluster','Z_score_cluster'
+                                    ,'Z_std_cluster',lead_time_col,'std_leadtime','avg_leadtime','Cost','Safety Stock Manual','ROP Manual','New Safety Stock Manual','Minimum Cost Manual']],width=1500, height=400)
             
             
                 product_list = data_2.apply(lambda x: f"{x['Product']} - {x['Grade']} - {x['Gram']}g", axis=1).unique().tolist()
@@ -916,7 +940,7 @@ def main():
                     st.markdown(f'<div class="metric-box1"><h2>Safety Stock</h2><h1>{selected_product_data["New Safety Stock Manual"].sum():,.4f}</h1></div>', unsafe_allow_html=True)
 
                 with result2:
-                    st.markdown(f'<div class="metric-box1"><h2>Reoder Point</h2><h1>{selected_product_data["ROP Weekly Manual"].sum():,.4f}</h1></div>', unsafe_allow_html=True)
+                    st.markdown(f'<div class="metric-box1"><h2>Reoder Point</h2><h1>{selected_product_data["ROP Manual"].sum():,.4f}</h1></div>', unsafe_allow_html=True)
 
                 with result3:
                     st.markdown(f'<div class="metric-box1"><h2>Minimum Cost</h2><h1>{selected_product_data["Minimum Cost Manual"].sum():,.4f}</h1></div>', unsafe_allow_html=True)
@@ -981,8 +1005,8 @@ def main():
                 st.markdown('')
                 st.markdown('')
                 st.markdown('')
-                st.dataframe(data_2[['Product','Grade','Gram','ton','number_of_week','average_weekly','std_ton_weekly','Product Type','Product Type Cluster','Z_score_cluster'
-                                    ,'Z_std_cluster','Lead Time (weeks)','std_leadtime','avg_leadtime','Cost','Safety Stock','ROP Weekly','Safety Stock Manual','ROP Weekly Manual','New Safety Stock','Minimum Cost','New Safety Stock Manual','Minimum Cost Manual']],width=1500, height=400)
+                st.dataframe(data_2[['Product','Grade','Gram','ton',number,average_col,std_col,'Product Type','Product Type Cluster','Z_score_cluster'
+                                    ,'Z_std_cluster',lead_time_col,'std_leadtime','avg_leadtime','Cost','Safety Stock','ROP','Safety Stock Manual','ROP Manual','New Safety Stock','Minimum Cost','New Safety Stock Manual','Minimum Cost Manual']],width=1500, height=400)
                 pass
     
 if __name__ == "__main__":
