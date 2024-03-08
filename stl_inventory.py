@@ -712,7 +712,8 @@ def main():
             data_2['Lead Time (month)'] = np.random.randint(1, 12, data_2.shape[0])
             data_2['Lead Time (9box)'] = np.random.randint(1, 12, data_2.shape[0])
             np.random.seed(42)  
-            data_2['Cost'] = np.random.randint(50,500, data_2.shape[0])
+            data_2['Holding Cost'] = np.random.randint(50,500, data_2.shape[0])
+            data_2['Production Cost'] = np.random.randint(50,500, data_2.shape[0])
             col1,col2 ,col3 = st.columns(3)
             with col1:
                 percentile_input_high = st.number_input('Enter the percentile for high (0-100):', min_value=0.0, max_value=100.0, value=97.0)
@@ -729,22 +730,24 @@ def main():
                 z_score_low = stats.norm.ppf(percentile_input_low / 100.0)
                 # z_score_low = stats.norm.ppf(percentile_input_low)
                 st.write(f"Z-Score Low: {z_score_low:.4f}")
-            data_type = st.selectbox('Select Data Type for Calculation', ['Weekly', 'Monthly', '9Box'], index=0) 
-            if data_type == 'Weekly':
-                lead_time_col = 'Lead Time (weeks)'
-                average_col = 'average_weekly'
-                std_col = 'std_ton_weekly'
-                number = 'number_of_week'
-            elif data_type == 'Monthly':
-                lead_time_col = 'Lead Time (month)'
-                average_col = 'average_monthly'
-                std_col = 'std_ton_monthly'
-                number = 'number_of_month'
-            elif data_type == '9Box':
-                lead_time_col = 'Lead Time (9box)'
-                average_col = 'average_monthly'
-                std_col = 'std_ton_weekly'
-                number = 'number_of_week'
+            
+            data_type = st.selectbox('Select Data Type for Calculation', ['Weekly', 'Monthly', '9Box'], index=0)  
+            if data_type:
+                if data_type == 'Weekly':
+                    lead_time_col = 'Lead Time (weeks)'
+                    average_col = 'average_weekly'
+                    std_col = 'std_ton_weekly'
+                    number = 'number_of_week'
+                elif data_type == 'Monthly':
+                    lead_time_col = 'Lead Time (month)'
+                    average_col = 'average_monthly'
+                    std_col = 'std_ton_monthly'
+                    number = 'number_of_month'
+                elif data_type == '9Box':
+                    lead_time_col = 'Lead Time (9box)'
+                    average_col = 'average_monthly'
+                    std_col = 'std_ton_weekly'
+                    number = 'number_of_week'
 
             st.markdown('')
             st.markdown('')
@@ -809,22 +812,44 @@ def main():
             
             data_2['New Safety Stock'] = data_2.apply(new_safety_stock, axis=1)
             data_2['New Safety Stock Manual'] = data_2.apply(new_safety_stock_manual, axis=1)
+            
 
             data_2 = data_2.drop(columns=['Unnamed: 0'])
             
             tab1 , tab2 , tab3 = st.tabs(["Safety Stock & Reorder Point ", "Safety Stock & Reorder Point (Cluster)", "Result for Minimum"])
+            limit = [2400]
             with tab1 :
                 st.markdown('<h4 style="text-align:center;color:red;">🛡️ Safety Stock & Reorder Point ⚠️</h4>', unsafe_allow_html=True)
-                c = data_2['Cost'].to_numpy()
-                A_ub = -1 * np.identity(len(c)) 
-                b_ub = -data_2['New Safety Stock'].to_numpy()
                 
-                x_bounds = [(0, None) for _ in range(len(c))]
-                result = linprog(c, A_ub=A_ub, b_ub=b_ub, bounds=x_bounds, method='highs')
+                min_xs = data_2['New Safety Stock'].to_numpy()
+                c = data_2['Production Cost'].to_numpy()
+                
+                
+                result_vertical = np.vstack(
+                    (
+                      -1 * np.identity(len(c)),
+                      np.ones((1,len(c)))/len(c)
+                    )
+                )
+                A_ub = result_vertical 
+                b_ub =  -1 * data_2['New Safety Stock'].to_numpy()
+                b_ub =  np.append(b_ub,limit)
+
+                
+                
+                x_bounds = [(0, None) for min_x in min_xs]
+                result = linprog(c, A_ub=A_ub, b_ub=b_ub, method='highs')
+
+                
                 data_2['Minimum Cost'] = result.x
-                
+
+                # เพิ่มคอลัมน์ 'EOQ' ใน DataFrame
+                data_2['EOQ'] = np.sqrt((2 * data_2['ton'] * data_2['Production Cost']) / data_2['Holding Cost'])
+                # st.write(np.sum(result.x))                           
+                             
+             
                 st.dataframe(data_2[['Product','Grade','Gram','ton',number,average_col,std_col,'Product Type','Z_score'
-                                    ,'Z_std',lead_time_col,'std_leadtime','avg_leadtime','Safety Stock','ROP','New Safety Stock','Minimum Cost']],width=1500, height=400)  
+                                    ,'Z_std',lead_time_col,'std_leadtime','avg_leadtime','Holding Cost','Production Cost','Safety Stock','ROP','EOQ','New Safety Stock','Minimum Cost']],width=1500, height=400)  
             
                 
                 product_list = data_2.apply(lambda x: f"{x['Product']} - {x['Grade']} - {x['Gram']}g", axis=1).unique().tolist()
@@ -888,17 +913,32 @@ def main():
             with tab2 :    
                 st.markdown('<h4 style="text-align:center;color:red;">🛡️ Safety Stock & Reorder Point (Cluster)⚠️</h4>', unsafe_allow_html=True)
             
-                c = data_2['Cost'].to_numpy()
-                A_ub = -1 * np.identity(len(c)) 
-                b_ub1 = -data_2['New Safety Stock Manual'].to_numpy()
+                min_xs = data_2['New Safety Stock Manual'].to_numpy()
+                c = data_2['Production Cost'].to_numpy()
                 
-                x_bounds = [(0, None) for _ in range(len(c))]
-                result_manual = linprog(c, A_ub=A_ub, b_ub=b_ub1, bounds=x_bounds, method='highs')
+                result_vertical = np.vstack(
+                    (
+                      -1 * np.identity(len(c)),
+                      np.ones((1,len(c)))/len(c)
+                    )
+                )
+                A_ub = result_vertical 
+                b_ub =  -1 * data_2['New Safety Stock Manual'].to_numpy()
+                b_ub =  np.append(b_ub,limit)
+
+                x_bounds = [(0, None) for min_x in min_xs]
+                result = linprog(c, A_ub=A_ub, b_ub=b_ub, method='highs')
+
                 
-                data_2['Minimum Cost Manual'] = result_manual.x
+                data_2['Minimum Cost Manual'] = result.x
+
+                # เพิ่มคอลัมน์ 'EOQ' ใน DataFrame
+                data_2['EOQ'] = np.sqrt((2 * data_2['ton'] * data_2['Production Cost']) / data_2['Holding Cost'])
+                # st.write(np.sum(result.x))    
                 
+    
                 st.dataframe(data_2[['Product','Grade','Gram','ton',number,average_col,std_col,'Product Type Cluster','Z_score_cluster'
-                                    ,'Z_std_cluster',lead_time_col,'std_leadtime','avg_leadtime','Cost','Safety Stock Manual','ROP Manual','New Safety Stock Manual','Minimum Cost Manual']],width=1500, height=400)
+                                    ,'Z_std_cluster',lead_time_col,'std_leadtime','avg_leadtime','Holding Cost','Safety Stock Manual','ROP Manual','EOQ','New Safety Stock Manual','Minimum Cost Manual']],width=1500, height=400)
             
             
                 product_list = data_2.apply(lambda x: f"{x['Product']} - {x['Grade']} - {x['Gram']}g", axis=1).unique().tolist()
@@ -961,16 +1001,30 @@ def main():
                 st.dataframe(selected_product_data)
                 
             with tab3:
-                st.markdown('<h4 style="text-align:center;"> Minimum cost between machine and manual💰 </h4>', unsafe_allow_html=True)
-                c = data_2['Cost'].to_numpy()
-                A_ub = -1 * np.identity(len(c)) 
-                x_bounds = [(0, None) for _ in range(len(c))]
-                b_ub = -data_2['New Safety Stock'].to_numpy()
-                result = linprog(c, A_ub=A_ub, b_ub=b_ub, bounds=x_bounds, method='highs')
+                st.markdown('<h4 style="text-align:center;"> Minimum Cost Between Machine And Manual💰 </h4>', unsafe_allow_html=True)
+                
+                min_xs = data_2['New Safety Stock'].to_numpy()
+                min_xs1 = data_2['New Safety Stock Manual'].to_numpy()
+                c = data_2['Production Cost'].to_numpy()
+                result_vertical = np.vstack(
+                    (
+                      -1 * np.identity(len(c)),
+                      np.ones((1,len(c)))/len(c)
+                    )
+                )
+                A_ub = result_vertical 
+                b_ub =  -1 * data_2['New Safety Stock'].to_numpy()
+                b_ub =  np.append(b_ub,limit)
+
+                x_bounds = [(0, None) for min_x in min_xs]
+                result = linprog(c, A_ub=A_ub, b_ub=b_ub, method='highs')
                 data_2['Minimum Cost'] = result.x
                 
-                b_ub1 = -data_2['New Safety Stock Manual'].to_numpy()
-                result_manual = linprog(c, A_ub=A_ub, b_ub=b_ub1, bounds=x_bounds, method='highs')
+                b_ub1 = -1 * data_2['New Safety Stock Manual'].to_numpy()
+                b_ub1 = np.append(b_ub1, limit)
+
+                x_bounds1 = [(0, None) for min_x in min_xs1]
+                result_manual = linprog(c, A_ub=A_ub, b_ub=b_ub1, method='highs')
                 data_2['Minimum Cost Manual'] = result_manual.x
                 
                 st.markdown("""
@@ -978,11 +1032,11 @@ def main():
                                 .metric-box2 {
                                     border: 4px solid 	#8ea5ff; /*สีขอบกรอบ*/
                                     /*background-color: #F8FFDB;  เปลี่ยนสีพื้นหลังกรอบ*/
-                                    border-radius: 25px; 
+                                    border-radius: 15px; 
                                     padding: 5px 10px;
                                     margin: 10px 0;
                                     text-align: center;
-                                    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+                                    box-shadow: 0 0 20px rgba(0,0,0,0.2);
                                 }
                                 .metric-box2 h2 {
                                     font-size: 1.2rem;
@@ -1005,10 +1059,14 @@ def main():
                 st.markdown('')
                 st.markdown('')
                 st.markdown('')
+                st.markdown('<h4 style="text-align:center;"> All Data 🌐📊📝 </h4>', unsafe_allow_html=True)
                 st.dataframe(data_2[['Product','Grade','Gram','ton',number,average_col,std_col,'Product Type','Product Type Cluster','Z_score_cluster'
-                                    ,'Z_std_cluster',lead_time_col,'std_leadtime','avg_leadtime','Cost','Safety Stock','ROP','Safety Stock Manual','ROP Manual','New Safety Stock','Minimum Cost','New Safety Stock Manual','Minimum Cost Manual']],width=1500, height=400)
+                                    ,'Z_std_cluster',lead_time_col,'std_leadtime','avg_leadtime','Holding Cost','Safety Stock','ROP','Safety Stock Manual','ROP Manual','EOQ','New Safety Stock','Minimum Cost','New Safety Stock Manual','Minimum Cost Manual']],width=1500, height=400)
+                
+                st.markdown('<h4 style="text-align:center;"> Products With Mismatched Groupings 🔄📦🚫 </h4>', unsafe_allow_html=True)
+                mismatched_rows = data_2[data_2['Product Type'] != data_2['Product Type Cluster']]
+                st.write(mismatched_rows)
                 pass
-    
 if __name__ == "__main__":
     main()
 
