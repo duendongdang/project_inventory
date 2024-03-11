@@ -149,7 +149,7 @@ def main():
     with st.sidebar:
         selected = option_menu("Main Menu", ["Weekly Data", "Monthly Data", "9-Box", "Calculate"], 
                                icons=["calendar-week", "calendar-month", "box", "calculator"], default_index=0)
-    kmeans = KMeans(n_clusters=5, n_init=10)
+    
     if selected in ["Weekly Data", "Monthly Data", "9-Box"]:
         st.title('Cluster :green[Analysis] with Streamlit📊📉')
         
@@ -252,6 +252,10 @@ def main():
                             n_clusters_weekly = st.slider('Select number of clusters for weekly', 2, 10, clusters_k)
                             if n_clusters_weekly:
                                 st.session_state['clusters'] = n_clusters_weekly
+                        
+                            # แก้โค้ดเพื่อระบุค่า `n_init` โดยชัดเจน
+                            kmeans = KMeans(n_clusters=5, n_init=10)  # ใช้ n_init เป็น 10 โดยชัดเจน
+
                             clustered_data_weekly = kmeans_clustering_weekly(data_classified, n_clusters_weekly)
                             scatter_plot_weekly(data_w=clustered_data_weekly, title='Clusters Weekly',
                                                 vertical_lower_w=vertical_Lower_W,
