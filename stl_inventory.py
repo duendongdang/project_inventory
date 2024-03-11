@@ -251,9 +251,7 @@ def main():
                             
                             n_clusters_weekly = st.slider('Select number of clusters for weekly', 2, 10, clusters_k)
                             if n_clusters_weekly:
-                                st.session_state['clusters'] = n_clusters_weekly
-                        
-            
+                                st.session_state['clusters'] = n_clusters_weekly         
 
                             clustered_data_weekly = kmeans_clustering_weekly(data_classified, n_clusters_weekly)
                             scatter_plot_weekly(data_w=clustered_data_weekly, title='Clusters Weekly',
