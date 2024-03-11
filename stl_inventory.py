@@ -1066,6 +1066,7 @@ def main():
                 st.markdown('<h4 style="text-align:center;"> Products With Mismatched Groupings 🔄📦🚫 </h4>', unsafe_allow_html=True)
                 mismatched_rows = data_2[data_2['Product Type'] != data_2['Product Type Cluster']]
                 st.write(mismatched_rows)
+                st.write('test')
                 pass
 if __name__ == "__main__":
     main()
