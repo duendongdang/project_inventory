@@ -253,8 +253,7 @@ def main():
                             if n_clusters_weekly:
                                 st.session_state['clusters'] = n_clusters_weekly
                         
-                            # แก้โค้ดเพื่อระบุค่า `n_init` โดยชัดเจน
-                            kmeans = KMeans(n_clusters=5, n_init=10)  # ใช้ n_init เป็น 10 โดยชัดเจน
+            
 
                             clustered_data_weekly = kmeans_clustering_weekly(data_classified, n_clusters_weekly)
                             scatter_plot_weekly(data_w=clustered_data_weekly, title='Clusters Weekly',
