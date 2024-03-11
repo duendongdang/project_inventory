@@ -23,7 +23,7 @@ def load_data(file_path):
         data = pd.read_csv(file_path)
     else:
         raise ValueError("Unsupported file format")
-    return data 
+    return data
 
 def kmeans_clustering_weekly(data_w, n_clusters):
     kmeans = KMeans(n_clusters=n_clusters , random_state=42)
@@ -43,7 +43,7 @@ def kmeans_clustering_9box(data_9box, n_clusters):
 def scatter_plot_weekly(data_w, title, vertical_lower_w, vertical_upper_w, horizontal_lower_w, horizontal_upper_w):
     fig, ax = plt.subplots(figsize=(16,8))
     ax.scatter(data_w['average_weekly'], data_w['std_ton_weekly'], c=data_w['Cluster'], cmap='viridis', s=90)
-    ax.set_title(title, fontsize=16 , fontweight='bold') 
+    ax.set_title(title, fontsize=16 , fontweight='bold',fontfamily='Arial') 
     ax.set_xlabel('average_weekly', fontsize=14)
     ax.set_ylabel('std_ton_weekly', fontsize=14)
     Lower_X_line_W = ax.axhline(y=horizontal_lower_w, color='IndianRed', linestyle='-', linewidth=3)
@@ -56,7 +56,7 @@ def scatter_plot_weekly(data_w, title, vertical_lower_w, vertical_upper_w, horiz
 def scatter_plot_monthly(data_m, title, vertical_lower_m, vertical_upper_m, horizontal_lower_m, horizontal_upper_m):
     fig, ax = plt.subplots(figsize=(16,8))
     ax.scatter(data_m['average_monthly'], data_m['std_ton_monthly'], c=data_m['Cluster'], cmap='viridis',s=90)
-    ax.set_title(title,fontsize=16 , fontweight='bold')
+    ax.set_title(title,fontsize=16 , fontweight='bold',fontfamily='Arial')
     ax.set_xlabel('average_monthly', fontsize=14)
     ax.set_ylabel('std_ton_monthly', fontsize=14)
     Lower_X_line_M = ax.axhline(y=horizontal_lower_m, color='IndianRed', linestyle='-', linewidth=3)
@@ -149,7 +149,7 @@ def main():
     with st.sidebar:
         selected = option_menu("Main Menu", ["Weekly Data", "Monthly Data", "9-Box", "Calculate"], 
                                icons=["calendar-week", "calendar-month", "box", "calculator"], default_index=0)
-    
+
     if selected in ["Weekly Data", "Monthly Data", "9-Box"]:
         st.title('Cluster :green[Analysis] with Streamlit📊📉')
         
@@ -251,8 +251,7 @@ def main():
                             
                             n_clusters_weekly = st.slider('Select number of clusters for weekly', 2, 10, clusters_k)
                             if n_clusters_weekly:
-                                st.session_state['clusters'] = n_clusters_weekly         
-
+                                st.session_state['clusters'] = n_clusters_weekly
                             clustered_data_weekly = kmeans_clustering_weekly(data_classified, n_clusters_weekly)
                             scatter_plot_weekly(data_w=clustered_data_weekly, title='Clusters Weekly',
                                                 vertical_lower_w=vertical_Lower_W,
@@ -835,6 +834,8 @@ def main():
                 A_ub = result_vertical 
                 b_ub =  -1 * data_2['New Safety Stock'].to_numpy()
                 b_ub =  np.append(b_ub,limit)
+
+                
                 
                 x_bounds = [(0, None) for min_x in min_xs]
                 result = linprog(c, A_ub=A_ub, b_ub=b_ub, method='highs')
@@ -845,6 +846,7 @@ def main():
                 # เพิ่มคอลัมน์ 'EOQ' ใน DataFrame
                 data_2['EOQ'] = np.sqrt((2 * data_2['ton'] * data_2['Production Cost']) / data_2['Holding Cost'])
                 # st.write(np.sum(result.x))                           
+                             
              
                 st.dataframe(data_2[['Product','Grade','Gram','ton',number,average_col,std_col,'Product Type','Z_score'
                                     ,'Z_std',lead_time_col,'std_leadtime','avg_leadtime','Holding Cost','Production Cost','Safety Stock','ROP','EOQ','New Safety Stock','Minimum Cost']],width=1500, height=400)  
@@ -937,6 +939,7 @@ def main():
     
                 st.dataframe(data_2[['Product','Grade','Gram','ton',number,average_col,std_col,'Product Type Cluster','Z_score_cluster'
                                     ,'Z_std_cluster',lead_time_col,'std_leadtime','avg_leadtime','Holding Cost','Safety Stock Manual','ROP Manual','EOQ','New Safety Stock Manual','Minimum Cost Manual']],width=1500, height=400)
+            
             
                 product_list = data_2.apply(lambda x: f"{x['Product']} - {x['Grade']} - {x['Gram']}g", axis=1).unique().tolist()
                 selected_product = st.selectbox('Select a product for cluster (Product : Grade : Gram)', product_list)
@@ -1063,7 +1066,6 @@ def main():
                 st.markdown('<h4 style="text-align:center;"> Products With Mismatched Groupings 🔄📦🚫 </h4>', unsafe_allow_html=True)
                 mismatched_rows = data_2[data_2['Product Type'] != data_2['Product Type Cluster']]
                 st.write(mismatched_rows)
-                st.write('test')
                 pass
 if __name__ == "__main__":
     main()
