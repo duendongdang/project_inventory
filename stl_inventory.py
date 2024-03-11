@@ -23,7 +23,7 @@ def load_data(file_path):
         data = pd.read_csv(file_path)
     else:
         raise ValueError("Unsupported file format")
-    return data
+    return data 
 
 def kmeans_clustering_weekly(data_w, n_clusters):
     kmeans = KMeans(n_clusters=n_clusters , random_state=42)
@@ -149,7 +149,7 @@ def main():
     with st.sidebar:
         selected = option_menu("Main Menu", ["Weekly Data", "Monthly Data", "9-Box", "Calculate"], 
                                icons=["calendar-week", "calendar-month", "box", "calculator"], default_index=0)
-
+    kmeans = KMeans(n_clusters=5, n_init=10)
     if selected in ["Weekly Data", "Monthly Data", "9-Box"]:
         st.title('Cluster :green[Analysis] with Streamlit📊📉')
         
