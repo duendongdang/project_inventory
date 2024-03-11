@@ -834,8 +834,6 @@ def main():
                 A_ub = result_vertical 
                 b_ub =  -1 * data_2['New Safety Stock'].to_numpy()
                 b_ub =  np.append(b_ub,limit)
-
-                
                 
                 x_bounds = [(0, None) for min_x in min_xs]
                 result = linprog(c, A_ub=A_ub, b_ub=b_ub, method='highs')
@@ -846,7 +844,6 @@ def main():
                 # เพิ่มคอลัมน์ 'EOQ' ใน DataFrame
                 data_2['EOQ'] = np.sqrt((2 * data_2['ton'] * data_2['Production Cost']) / data_2['Holding Cost'])
                 # st.write(np.sum(result.x))                           
-                             
              
                 st.dataframe(data_2[['Product','Grade','Gram','ton',number,average_col,std_col,'Product Type','Z_score'
                                     ,'Z_std',lead_time_col,'std_leadtime','avg_leadtime','Holding Cost','Production Cost','Safety Stock','ROP','EOQ','New Safety Stock','Minimum Cost']],width=1500, height=400)  
@@ -939,7 +936,6 @@ def main():
     
                 st.dataframe(data_2[['Product','Grade','Gram','ton',number,average_col,std_col,'Product Type Cluster','Z_score_cluster'
                                     ,'Z_std_cluster',lead_time_col,'std_leadtime','avg_leadtime','Holding Cost','Safety Stock Manual','ROP Manual','EOQ','New Safety Stock Manual','Minimum Cost Manual']],width=1500, height=400)
-            
             
                 product_list = data_2.apply(lambda x: f"{x['Product']} - {x['Grade']} - {x['Gram']}g", axis=1).unique().tolist()
                 selected_product = st.selectbox('Select a product for cluster (Product : Grade : Gram)', product_list)
