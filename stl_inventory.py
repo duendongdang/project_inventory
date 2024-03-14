@@ -43,9 +43,9 @@ def kmeans_clustering_9box(data_9box, n_clusters):
 def scatter_plot_weekly(data_w, title, vertical_lower_w, vertical_upper_w, horizontal_lower_w, horizontal_upper_w):
     fig, ax = plt.subplots(figsize=(16,8))
     ax.scatter(data_w['average_weekly'], data_w['std_ton_weekly'], c=data_w['Cluster'], cmap='viridis', s=90)
-    ax.set_title(title, fontsize=16 , fontweight='bold',fontfamily='Arial') 
-    ax.set_xlabel('average_weekly', fontsize=14)
-    ax.set_ylabel('std_ton_weekly', fontsize=14)
+    ax.set_title(title, fontsize=16 , fontweight='bold') 
+    ax.set_xlabel('Average total sales per week', fontsize=14)
+    ax.set_ylabel('Standard weekly sales volume in tonnes', fontsize=14)
     Lower_X_line_W = ax.axhline(y=horizontal_lower_w, color='IndianRed', linestyle='-', linewidth=3)
     Upper_X_line_W = ax.axhline(y=horizontal_upper_w, color='IndianRed', linestyle='-', linewidth=3)
     Lower_Y_line_W = ax.axvline(x=vertical_lower_w, color='IndianRed', linestyle='-', linewidth=3)
@@ -56,9 +56,9 @@ def scatter_plot_weekly(data_w, title, vertical_lower_w, vertical_upper_w, horiz
 def scatter_plot_monthly(data_m, title, vertical_lower_m, vertical_upper_m, horizontal_lower_m, horizontal_upper_m):
     fig, ax = plt.subplots(figsize=(16,8))
     ax.scatter(data_m['average_monthly'], data_m['std_ton_monthly'], c=data_m['Cluster'], cmap='viridis',s=90)
-    ax.set_title(title,fontsize=16 , fontweight='bold',fontfamily='Arial')
-    ax.set_xlabel('average_monthly', fontsize=14)
-    ax.set_ylabel('std_ton_monthly', fontsize=14)
+    ax.set_title(title,fontsize=16 , fontweight='bold')
+    ax.set_xlabel('Average total sales per month', fontsize=14)
+    ax.set_ylabel('Standard monthly sales volume in tonnes', fontsize=14)
     Lower_X_line_M = ax.axhline(y=horizontal_lower_m, color='IndianRed', linestyle='-', linewidth=3)
     Upper_X_line_M = ax.axhline(y=horizontal_upper_m, color='IndianRed', linestyle='-', linewidth=3)
     Lower_Y_line_M = ax.axvline(x=vertical_lower_m, color='IndianRed', linestyle='-', linewidth=3)
@@ -69,9 +69,9 @@ def scatter_plot_monthly(data_m, title, vertical_lower_m, vertical_upper_m, hori
 def scatter_plot_9box(data_9box, title, vertical_lower_w, vertical_upper_w, horizontal_lower_m, horizontal_upper_m):
     fig, ax = plt.subplots(figsize=(14,8))
     ax.scatter(data_9box['average_monthly'], data_9box['std_ton_weekly'], c=data_9box['Cluster'], cmap='viridis',s=90)
-    ax.set_title(title,fontsize=20 , fontweight='bold',fontfamily='Arial')
-    ax.set_xlabel('average_monthly' , fontsize=14)
-    ax.set_ylabel('std_ton_weekly', fontsize=14)
+    ax.set_title(title,fontsize=20 , fontweight='bold')
+    ax.set_xlabel('Average total sales per month' , fontsize=14)
+    ax.set_ylabel('Standard weekly sales volume in tonnes', fontsize=14)
 
     # คำนวณขอบเขตของแกน x และ y โดยเพิ่ม margin
     x_margin = (data_9box['average_monthly'].max() - data_9box['average_monthly'].min()) * 0.1
