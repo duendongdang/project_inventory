@@ -374,7 +374,7 @@ def main():
                     first_row_cols = st.columns(3)
                     second_row_cols = st.columns(3) 
                     cluster_type={
-                        0:'non-std', 1:'low-std',2:'std'
+                        1:'non-std', 0:'low-std',2:'std'
                     }
                     area_type = {
                         1: 'non-std', 2: 'non-std', 3: 'low-std', 
@@ -549,7 +549,7 @@ def main():
                 first_row_cols = st.columns(3)
                 second_row_cols = st.columns(3) 
                 cluster_type={
-                    0:'non-std', 1:'low-std',2:'std'
+                    1:'non-std', 0:'low-std',2:'std'
                 }
                 area_type = {
                     1: 'non-std', 2: 'non-std', 3: 'low-std', 
@@ -721,7 +721,7 @@ def main():
                 first_row_cols = st.columns(3)
                 second_row_cols = st.columns(3) 
                 cluster_type={
-                    0:'non-std', 1:'low-std',2:'std'
+                    1:'non-std', 0:'low-std',2:'std'
                 }
                 area_type = {
                         1: 'non-std', 2: 'non-std', 3: 'low-std', 
