@@ -892,8 +892,7 @@ def main():
             data_2['New Safety Stock'] = data_2.apply(new_safety_stock, axis=1)
             data_2['New Safety Stock Manual'] = data_2.apply(new_safety_stock_manual, axis=1)
             
-            # เพิ่มคอลัมน์ 'EOQ' ใน DataFrame
-            data_2['EOQ'] = np.sqrt((2 * data_2['ton'] * data_2['Production Cost']) / data_2['Holding Cost'])
+            
             data_2 = data_2.drop(columns=['Unnamed: 0'])
             
             tab1 , tab2 , tab3 = st.tabs(["Safety Stock & Reorder Point (Machine) ", "Safety Stock & Reorder Point (Manual)", "Result for Minimum Cost"])
@@ -921,7 +920,8 @@ def main():
                 
                 data_2['Minimum Cost Machine'] = result.x
 
-                
+                # เพิ่มคอลัมน์ 'EOQ' ใน DataFrame
+                data_2['EOQ'] = np.sqrt((2 * data_2['ton'] * data_2['Production Cost']) / data_2['Holding Cost'])
                 # st.write(np.sum(result.x))                           
                              
              
