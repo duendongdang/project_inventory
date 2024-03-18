@@ -84,8 +84,8 @@ def scatter_plot_9box(data_9box, title, vertical_lower_w, vertical_upper_w, hori
     Upper_X_line_M = ax.axhline(y=horizontal_upper_m, color='IndianRed', linestyle='-', linewidth=3 )
     Lower_Y_line_W = ax.axvline(x=vertical_lower_w, color='IndianRed', linestyle='-', linewidth=3 )
     Upper_Y_line_W = ax.axvline(x=vertical_upper_w, color='IndianRed', linestyle='-', linewidth=3 )
-
     ax.grid(True, linewidth=1, linestyle='--', alpha=0.7)
+    
     st.pyplot(fig)
 
     
@@ -813,7 +813,8 @@ def main():
             data_2['New Safety Stock'] = data_2.apply(new_safety_stock, axis=1)
             data_2['New Safety Stock Manual'] = data_2.apply(new_safety_stock_manual, axis=1)
             
-
+            # เพิ่มคอลัมน์ 'EOQ' ใน DataFrame
+            data_2['EOQ'] = np.sqrt((2 * data_2['ton'] * data_2['Production Cost']) / data_2['Holding Cost'])
             data_2 = data_2.drop(columns=['Unnamed: 0'])
             
             tab1 , tab2 , tab3 = st.tabs(["Safety Stock & Reorder Point ", "Safety Stock & Reorder Point (Cluster)", "Result for Minimum"])
@@ -843,8 +844,7 @@ def main():
                 
                 data_2['Minimum Cost'] = result.x
 
-                # เพิ่มคอลัมน์ 'EOQ' ใน DataFrame
-                data_2['EOQ'] = np.sqrt((2 * data_2['ton'] * data_2['Production Cost']) / data_2['Holding Cost'])
+                
                 # st.write(np.sum(result.x))                           
                              
              
