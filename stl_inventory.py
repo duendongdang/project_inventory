@@ -970,7 +970,7 @@ def main():
                     st.markdown(f'<div class="metric-box"><h2>Reoder Point</h2><h1>{selected_product_data["ROP"].sum():,.4f}</h1></div>', unsafe_allow_html=True)
 
                 with result3:
-                    st.markdown(f'<div class="metric-box"><h2>Minimum Cost Machine</h2><h1>{selected_product_data["'Minimum Cost Machine"].sum():,.4f}</h1></div>', unsafe_allow_html=True)
+                    st.markdown(f'<div class="metric-box"><h2>Minimum Cost Machine</h2><h1>{selected_product_data["Minimum Cost Machine"].sum():,.4f}</h1></div>', unsafe_allow_html=True)
                 
                 st.markdown('')
                 st.markdown('')
