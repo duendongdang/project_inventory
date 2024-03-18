@@ -51,6 +51,33 @@ def scatter_plot_weekly(data_w, title, vertical_lower_w, vertical_upper_w, horiz
     Lower_Y_line_W = ax.axvline(x=vertical_lower_w, color='IndianRed', linestyle='-', linewidth=3)
     Upper_Y_line_W = ax.axvline(x=vertical_upper_w, color='IndianRed', linestyle='-', linewidth=3)
     ax.grid(True, linewidth=1, linestyle='--', alpha=0.7)
+    
+     # หาขอบเขตสูงสุดและต่ำสุดของข้อมูลสำหรับกำหนดตำแหน่ง
+    data_max_x = data_w['average_weekly'].max()
+    data_max_y = data_w['std_ton_weekly'].max()
+    data_min_x = data_w['average_weekly'].min()
+    data_min_y = data_w['std_ton_weekly'].min()
+
+    # ตำแหน่งข้อความสำหรับพื้นที่ 9 ช่อง
+    text_positions = [
+        (data_min_x + (vertical_lower_w - data_min_x)/2, horizontal_upper_w + (data_max_y - horizontal_upper_w)/2), # Area 1
+        (vertical_lower_w + (vertical_upper_w - vertical_lower_w)/2, horizontal_upper_w + (data_max_y - horizontal_upper_w)/2), # Area 2
+        (vertical_upper_w + (data_max_x - vertical_upper_w)/2, horizontal_upper_w + (data_max_y - horizontal_upper_w)/2), # Area 3
+        (data_min_x + (vertical_lower_w - data_min_x)/2, horizontal_lower_w + (horizontal_upper_w - horizontal_lower_w)/2), # Area 4
+        (vertical_lower_w + (vertical_upper_w - vertical_lower_w)/2, horizontal_lower_w + (horizontal_upper_w - horizontal_lower_w)/2), # Area 5
+        (vertical_upper_w + (data_max_x - vertical_upper_w)/2, horizontal_lower_w + (horizontal_upper_w - horizontal_lower_w)/2), # Area 6
+        (data_min_x + (vertical_lower_w - data_min_x)/2, data_min_y + (horizontal_lower_w - data_min_y)/2), # Area 7
+        (vertical_lower_w + (vertical_upper_w - vertical_lower_w)/2, data_min_y + (horizontal_lower_w - data_min_y)/2), # Area 8
+        (vertical_upper_w + (data_max_x - vertical_upper_w)/2, data_min_y + (horizontal_lower_w - data_min_y)/2), # Area 9
+    ]
+
+    # ข้อความสำหรับพื้นที่ 9 ช่อง
+    area_labels = ['Non-std', 'Non-std', 'Low-std', 'Non-std', 'Low-std', 'Std', 'Low-std', 'Std', 'Std']
+
+    # วาดข้อความ
+    for position, label in zip(text_positions, area_labels):
+        ax.text(*position, label, ha='center', va='center', fontsize=20, color='gray', fontweight='bold')
+        
     st.pyplot(fig)
     
 def scatter_plot_monthly(data_m, title, vertical_lower_m, vertical_upper_m, horizontal_lower_m, horizontal_upper_m):
@@ -64,6 +91,32 @@ def scatter_plot_monthly(data_m, title, vertical_lower_m, vertical_upper_m, hori
     Lower_Y_line_M = ax.axvline(x=vertical_lower_m, color='IndianRed', linestyle='-', linewidth=3)
     Upper_Y_line_M = ax.axvline(x=vertical_upper_m, color='IndianRed', linestyle='-', linewidth=3)
     ax.grid(True, linewidth=1, linestyle='--', alpha=0.7)
+    
+     data_max_x = data_m['average_monthly'].max()
+    data_max_y = data_m['std_ton_monthly'].max()
+    data_min_x = data_m['average_monthly'].min()
+    data_min_y = data_m['std_ton_monthly'].min()
+
+    # ตำแหน่งข้อความสำหรับพื้นที่ 9 ช่อง
+    text_positions = [
+        (data_min_x + (vertical_lower_m - data_min_x)/2, horizontal_upper_m + (data_max_y - horizontal_upper_m)/2), # Area 1
+        (vertical_lower_m + (vertical_upper_m - vertical_lower_m)/2, horizontal_upper_m + (data_max_y - horizontal_upper_m)/2), # Area 2
+        (vertical_upper_m + (data_max_x - vertical_upper_m)/2, horizontal_upper_m + (data_max_y - horizontal_upper_m)/2), # Area 3
+        (data_min_x + (vertical_lower_m - data_min_x)/2, horizontal_lower_m + (horizontal_upper_m - horizontal_lower_m)/2), # Area 4
+        (vertical_lower_m + (vertical_upper_m - vertical_lower_m)/2, horizontal_lower_m + (horizontal_upper_m - horizontal_lower_m)/2), # Area 5
+        (vertical_upper_m + (data_max_x - vertical_upper_m)/2, horizontal_lower_m + (horizontal_upper_m - horizontal_lower_m)/2), # Area 6
+        (data_min_x + (vertical_lower_m - data_min_x)/2, data_min_y + (horizontal_lower_m - data_min_y)/2), # Area 7
+        (vertical_lower_m + (vertical_upper_m - vertical_lower_m)/2, data_min_y + (horizontal_lower_m - data_min_y)/2), # Area 8
+        (vertical_upper_m + (data_max_x - vertical_upper_m)/2, data_min_y + (horizontal_lower_m - data_min_y)/2), # Area 9
+    ]
+
+    # ข้อความสำหรับพื้นที่ 9 ช่อง
+    area_labels = ['Non-Std', 'Non-Std', 'Low-Std', 'Non-Std', 'Low-Std', 'Std', 'Low-Std', 'Std', 'Std']
+
+    # วาดข้อความ
+    for position, label in zip(text_positions, area_labels):
+        ax.text(*position, label, ha='center', va='center', fontsize=20, color='gray', fontweight='bold')
+        
     st.pyplot(fig)
     
 def scatter_plot_9box(data_9box, title, vertical_lower_w, vertical_upper_w, horizontal_lower_m, horizontal_upper_m):
@@ -86,6 +139,32 @@ def scatter_plot_9box(data_9box, title, vertical_lower_w, vertical_upper_w, hori
     Upper_Y_line_W = ax.axvline(x=vertical_upper_w, color='IndianRed', linestyle='-', linewidth=3 )
     ax.grid(True, linewidth=1, linestyle='--', alpha=0.7)
     
+     # หาขอบเขตสูงสุดและต่ำสุดของข้อมูลสำหรับกำหนดตำแหน่ง
+    data_max_x = data_9box['average_monthly'].max()
+    data_max_y = data_9box['std_ton_weekly'].max()
+    data_min_x = data_9box['average_monthly'].min()
+    data_min_y = data_9box['std_ton_weekly'].min()
+
+    # ตำแหน่งข้อความสำหรับพื้นที่ 9 ช่อง
+    text_positions = [
+        (data_min_x + (vertical_lower_w - data_min_x)/2, horizontal_upper_m + (data_max_y - horizontal_upper_m)/2), # Area 1
+        (vertical_lower_w + (vertical_upper_w - vertical_lower_w)/2, horizontal_upper_m + (data_max_y - horizontal_upper_m)/2), # Area 2
+        (vertical_upper_w + (data_max_x - vertical_upper_w)/2, horizontal_upper_m + (data_max_y - horizontal_upper_m)/2), # Area 3
+        (data_min_x + (vertical_lower_w - data_min_x)/2, horizontal_lower_m + (horizontal_upper_m - horizontal_lower_m)/2), # Area 4
+        (vertical_lower_w + (vertical_upper_w - vertical_lower_w)/2, horizontal_lower_m + (horizontal_upper_m - horizontal_lower_m)/2), # Area 5
+        (vertical_upper_w + (data_max_x - vertical_upper_w)/2, horizontal_lower_m + (horizontal_upper_m - horizontal_lower_m)/2), # Area 6
+        (data_min_x + (vertical_lower_w - data_min_x)/2, data_min_y + (horizontal_lower_m - data_min_y)/2), # Area 7
+        (vertical_lower_w + (vertical_upper_w - vertical_lower_w)/2, data_min_y + (horizontal_lower_m - data_min_y)/2), # Area 8
+        (vertical_upper_w + (data_max_x - vertical_upper_w)/2, data_min_y + (horizontal_lower_m - data_min_y)/2), # Area 9
+    ]
+
+    # ข้อความสำหรับพื้นที่ 9 ช่อง
+    area_labels = ['Non-std', 'Non-std', 'Low-std', 'Non-std', 'Low-std', 'Std', 'Low-std', 'Std', 'Std']
+
+    # วาดข้อความ
+    for position, label in zip(text_positions, area_labels):
+        ax.text(*position, label, ha='center', va='center', fontsize=20, color='gray', fontweight='bold')
+        
     st.pyplot(fig)
 
     
