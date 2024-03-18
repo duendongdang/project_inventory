@@ -904,7 +904,6 @@ def main():
                 min_xs = data_2['New Safety Stock'].to_numpy()
                 c = data_2['Production Cost'].to_numpy()
                 
-                
                 result_vertical = np.vstack(
                     (
                       -1 * np.identity(len(c)),
@@ -916,19 +915,18 @@ def main():
                 b_ub =  np.append(b_ub,limit)
 
                 
-                
                 x_bounds = [(0, None) for min_x in min_xs]
                 result = linprog(c, A_ub=A_ub, b_ub=b_ub, method='highs')
 
                 
-                data_2['Minimum Cost'] = result.x
+                data_2['Minimum Cost Machine'] = result.x
 
                 
                 # st.write(np.sum(result.x))                           
                              
              
                 st.dataframe(data_2[['Product','Grade','Gram','ton',number,average_col,std_col,'Product Type','Z_score'
-                                    ,'Z_std',lead_time_col,'std_leadtime','avg_leadtime','Holding Cost','Production Cost','Safety Stock','ROP','EOQ','New Safety Stock','Minimum Cost']],width=1500, height=400)  
+                                    ,'Z_std',lead_time_col,'std_leadtime','avg_leadtime','Holding Cost','Production Cost','Safety Stock','ROP','EOQ','New Safety Stock','Minimum Cost Machine']],width=1500, height=400)  
             
                 
                 product_list = data_2.apply(lambda x: f"{x['Product']} - {x['Grade']} - {x['Gram']}g", axis=1).unique().tolist()
@@ -972,7 +970,7 @@ def main():
                     st.markdown(f'<div class="metric-box"><h2>Reoder Point</h2><h1>{selected_product_data["ROP"].sum():,.4f}</h1></div>', unsafe_allow_html=True)
 
                 with result3:
-                    st.markdown(f'<div class="metric-box"><h2>Minimum Cost</h2><h1>{selected_product_data["Minimum Cost"].sum():,.4f}</h1></div>', unsafe_allow_html=True)
+                    st.markdown(f'<div class="metric-box"><h2>Minimum Cost Machine</h2><h1>{selected_product_data["'Minimum Cost Machine"].sum():,.4f}</h1></div>', unsafe_allow_html=True)
                 
                 st.markdown('')
                 st.markdown('')
@@ -1080,7 +1078,7 @@ def main():
                 st.dataframe(selected_product_data)
                 
             with tab3:
-                st.markdown('<h4 style="text-align:center;"> Minimum Cost Between Machine And Manual💰 </h4>', unsafe_allow_html=True)
+                st.markdown('<h4 style="text-align:center;"> Minimum Cost Machine Between Machine And Manual💰 </h4>', unsafe_allow_html=True)
                 
                 min_xs = data_2['New Safety Stock'].to_numpy()
                 min_xs1 = data_2['New Safety Stock Manual'].to_numpy()
@@ -1097,7 +1095,7 @@ def main():
 
                 x_bounds = [(0, None) for min_x in min_xs]
                 result = linprog(c, A_ub=A_ub, b_ub=b_ub, method='highs')
-                data_2['Minimum Cost'] = result.x
+                data_2['Minimum Cost Machine'] = result.x
                 
                 b_ub1 = -1 * data_2['New Safety Stock Manual'].to_numpy()
                 b_ub1 = np.append(b_ub1, limit)
@@ -1140,7 +1138,7 @@ def main():
                 st.markdown('')
                 st.markdown('<h4 style="text-align:center;"> All Data 🌐📊📝 </h4>', unsafe_allow_html=True)
                 st.dataframe(data_2[['Product','Grade','Gram','ton',number,average_col,std_col,'Product Type','Product Type Cluster','Z_score_cluster'
-                                    ,'Z_std_cluster',lead_time_col,'std_leadtime','avg_leadtime','Holding Cost','Safety Stock','ROP','Safety Stock Manual','ROP Manual','EOQ','New Safety Stock','Minimum Cost','New Safety Stock Manual','Minimum Cost Manual']],width=1500, height=400)
+                                    ,'Z_std_cluster',lead_time_col,'std_leadtime','avg_leadtime','Holding Cost','Safety Stock','ROP','Safety Stock Manual','ROP Manual','EOQ','New Safety Stock','Minimum Cost Machine','New Safety Stock Manual','Minimum Cost Manual']],width=1500, height=400)
                 
                 st.markdown('<h4 style="text-align:center;"> Products With Mismatched Groupings 🔄📦🚫 </h4>', unsafe_allow_html=True)
                 mismatched_rows = data_2[data_2['Product Type'] != data_2['Product Type Cluster']]
