@@ -1140,7 +1140,7 @@ def main():
                 st.dataframe(data_2[['Product','Grade','Gram','ton',number,average_col,std_col,'Product Type','Product Type Cluster','Z_score_cluster'
                                     ,'Z_std_cluster',lead_time_col,'std_leadtime','avg_leadtime','Holding Cost','Safety Stock','ROP','Safety Stock Manual','ROP Manual','EOQ','New Safety Stock','Minimum Cost Machine','New Safety Stock Manual','Minimum Cost Manual']],width=1500, height=400)
                 
-                st.markdown('<h4 style="text-align:center;"> Products With Mismatched Groupings 🔄📦🚫 </h4>', unsafe_allow_html=True)
+                st.markdown('<h4 style="text-align:center;"> Products With Mismatched 🔄📦🚫 </h4>', unsafe_allow_html=True)
                 mismatched_rows = data_2[data_2['Product Type'] != data_2['Product Type Cluster']]
                 st.write(mismatched_rows)
                 pass
