@@ -92,7 +92,7 @@ def scatter_plot_monthly(data_m, title, vertical_lower_m, vertical_upper_m, hori
     Upper_Y_line_M = ax.axvline(x=vertical_upper_m, color='IndianRed', linestyle='-', linewidth=3)
     ax.grid(True, linewidth=1, linestyle='--', alpha=0.7)
     
-     data_max_x = data_m['average_monthly'].max()
+    data_max_x = data_m['average_monthly'].max()
     data_max_y = data_m['std_ton_monthly'].max()
     data_min_x = data_m['average_monthly'].min()
     data_min_y = data_m['std_ton_monthly'].min()
