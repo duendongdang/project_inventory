@@ -1137,7 +1137,7 @@ def main():
                 st.markdown('')
                 st.markdown('')
                 st.markdown('<h4 style="text-align:center;"> All Data 🌐📊📝 </h4>', unsafe_allow_html=True)
-                st.dataframe(data_2[['Product','Grade','Gram','ton',number,average_col,std_col,'Product Type','Product Type Cluster','Z_score_cluster'
+                st.dataframe(data_2[['Product','Grade','Gram','ton',number,average_col,std_col,'Product Type','Product Type Cluster','Z_std'
                                     ,'Z_std_cluster',lead_time_col,'std_leadtime','avg_leadtime','Holding Cost','Safety Stock','ROP','Safety Stock Manual','ROP Manual','EOQ','New Safety Stock','Minimum Cost Machine','New Safety Stock Manual','Minimum Cost Manual']],width=1500, height=400)
                 
                 st.markdown('<h4 style="text-align:center;"> Products With Mismatched 🔄📦🚫 </h4>', unsafe_allow_html=True)
