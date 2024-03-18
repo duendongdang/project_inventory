@@ -896,7 +896,7 @@ def main():
             data_2['EOQ'] = np.sqrt((2 * data_2['ton'] * data_2['Production Cost']) / data_2['Holding Cost'])
             data_2 = data_2.drop(columns=['Unnamed: 0'])
             
-            tab1 , tab2 , tab3 = st.tabs(["Safety Stock & Reorder Point (Machine) ", "Safety Stock & Reorder Point (Manual)", "Result for Minimum"])
+            tab1 , tab2 , tab3 = st.tabs(["Safety Stock & Reorder Point (Machine) ", "Safety Stock & Reorder Point (Manual)", "Result for Minimum Cost"])
             limit = [2400]
             with tab1 :
                 st.markdown('<h4 style="text-align:center;color:red;">🛡️ Safety Stock & Reorder Point ⚠️</h4>', unsafe_allow_html=True)
