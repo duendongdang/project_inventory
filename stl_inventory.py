@@ -446,8 +446,8 @@ def main():
                             st.session_state['vertical_max_m'] = round(float(data_1['average_monthly'].max()),2)
                             st.session_state['horizontal_min_m'] = round(float(data_1['std_ton_monthly'].min()),2)
                             st.session_state['horizontal_max_m'] = round(float(data_1['std_ton_monthly'].max()),2)
-                            vertical_min = st.session_state['vertical_min']
-                            vertical_max = st.session_state['vertical_max']
+                            vertical_min_m = st.session_state['vertical_min_m']
+                            vertical_max_m = st.session_state['vertical_max_m']
                             horizontal_min = st.session_state['horizontal_min_m']
                             horizontal_max = st.session_state['horizontal_max_m']
                     else:
