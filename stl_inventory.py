@@ -1107,8 +1107,8 @@ def main():
                 st.markdown("""
                                 <style>
                                 .metric-box2 {
-                                    border: 4px solid 	#8ea5ff; /*สีขอบกรอบ #8ea5ff*/
-                                    background-color: #8ea5ff;  /*เปลี่ยนสีพื้นหลังกรอบ*/
+                                    border: 4px solid 	#8ea5ff; /*สีขอบกรอบ*/
+                                    /*background-color: #F8FFDB;  เปลี่ยนสีพื้นหลังกรอบ*/
                                     border-radius: 15px; 
                                     padding: 5px 10px;
                                     margin: 10px 0;
@@ -1117,12 +1117,12 @@ def main():
                                 }
                                 .metric-box2 h2 {
                                     font-size: 1.2rem;
-                                    color: #F8FFDB; /* เปลี่ยนสีข้อความหัว #F8FFDB */
+                                    color: #5C469C; /* เปลี่ยนสีข้อความหัว */
                                     margin: 0;
                                 }
                                 .metric-box2 h1 {
                                     font-size: 2.5rem;
-                                    color: #F8FFDB;
+                                    color: #1D267D;
                                     margin: 0;
                                 }
                                 </style>
